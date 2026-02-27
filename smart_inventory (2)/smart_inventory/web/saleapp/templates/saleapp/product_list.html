@@ -1,0 +1,225 @@
+{% if products %}
+  <style>
+    :root{
+      --bg: #f6f8ff;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e5eaf5;
+
+      --blue: #2563eb;
+      --blue-600: #1d4ed8;
+      --blue-50: #eff6ff;
+
+      --danger: #ef4444;
+      --danger-600: #dc2626;
+      --danger-50: #fef2f2;
+
+      --shadow: 0 14px 35px rgba(2, 6, 23, .08);
+      --radius: 16px;
+    }
+
+    .products-card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .products-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 18px 18px;
+      background: linear-gradient(180deg, #ffffff, var(--blue-50));
+      border-bottom: 1px solid var(--border);
+    }
+
+    .products-title{
+      margin:0;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: .2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .products-badge{
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+      background: rgba(37, 99, 235, .10);
+      border: 1px solid rgba(37, 99, 235, .18);
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      max-width:100%;
+    }
+
+    table.products-table{
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 760px;
+    }
+
+    table.products-table thead th{
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #ffffff;
+      color: #0b2a6a;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+      padding: 14px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.products-table tbody td{
+      padding: 14px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+      vertical-align: middle;
+      background: #ffffff;
+    }
+
+    table.products-table tbody tr:hover td{
+      background: var(--blue-50);
+    }
+
+    .cell-muted{ color: var(--muted); }
+
+    .cell-price, .cell-stock{
+      font-weight: 800;
+      color: #0b2a6a;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      text-decoration:none;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1;
+      border: 1px solid transparent;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+
+    .btn:active{ transform: scale(.98); }
+
+    .btn-edit{
+      color: #0b2a6a;
+      background: rgba(37, 99, 235, .10);
+      border-color: rgba(37, 99, 235, .22);
+    }
+
+    .btn-edit:hover{
+      background: rgba(37, 99, 235, .16);
+      border-color: rgba(37, 99, 235, .32);
+      box-shadow: 0 10px 18px rgba(37,99,235,.12);
+    }
+
+    .btn-delete{
+      color: var(--danger-600);
+      background: var(--danger-50);
+      border-color: rgba(239, 68, 68, .25);
+    }
+
+    .btn-delete:hover{
+      background: rgba(239, 68, 68, .14);
+      border-color: rgba(239, 68, 68, .35);
+      box-shadow: 0 10px 18px rgba(239,68,68,.10);
+    }
+
+    .empty-row{
+      text-align:center;
+      color: var(--muted);
+      padding: 18px;
+    }
+
+    .empty{
+      margin: 14px 0;
+      padding: 14px 16px;
+      border: 1px dashed rgba(37,99,235,.35);
+      border-radius: 14px;
+      background: var(--blue-50);
+      color: #0b2a6a;
+      font-weight: 700;
+    }
+  </style>
+
+  <div class="products-card">
+    <div class="products-head">
+      <h3 class="products-title">
+        Products List
+        <span class="products-badge">{{ products|length }} items</span>
+      </h3>
+    </div>
+
+    <div class="table-wrap">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th style="width: 140px; text-align:right;">Price</th>
+            <th style="width: 140px; text-align:right;">Stock</th>
+            <th style="width: 190px; text-align:right;">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for p in products %}
+            <tr>
+              <td>{{ p.name }}</td>
+              <td class="cell-muted">{{ p.category }}</td>
+              <td class="cell-price">{{ p.price }}</td>
+              <td class="cell-stock">{{ p.quantity_in_stock }}</td>
+
+              <td>
+                <div class="actions">
+                  <a class="btn btn-edit" href="{% url 'product_update' p.id %}">Edit</a>
+                  <a class="btn btn-delete" href="{% url 'product_delete' p.id %}">Delete</a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="empty-row">No products found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% else %}
+  <p class="empty">No products found.</p>
+{% endif %}
